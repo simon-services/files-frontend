@@ -1,6 +1,7 @@
 $(document).ready(function () {
 	var connID = null;
 	var token = null;
+	var logo = "/img/logo.png";
 	var bucket = "test";
 	EVLogin({
 		onSend: function (obj) {
@@ -13,16 +14,16 @@ $(document).ready(function () {
 				onSuccess: function (json) {
 					EVSideBar({
 						target: "container",
-						title: "EVMsg-JS Widgets",
-						intro: "EVMsg-JS Widgets",
-						logo: "/img/evalgo.png",
+						title: "files",
+						intro: "files",
 						content: "contentID",
 						footer: "footerID",
+						logo: logo,
 						nav: [
 							{
 								position:0,
-								label:"test",
-								link:"#test",
+								label:bucket,
+								link:"#"+bucket,
 								dropdown: false
 							},
 							{
@@ -35,16 +36,26 @@ $(document).ready(function () {
 						helpers:{
 							onClick: function(e,o){
 								switch(o.linkCtx.data.link()){
-									case "#create":
-										EVMsg.send(connID,EVMsg.newMessage({scope:"Bucket",command:"create",token:token,data:[{bucket:bucket}]}),function(created){
-											console.log(created);
-										});
-									case "#test":
+									case "#"+bucket:
 										EVMsg.send(connID, EVMsg.newMessage({ scope: "Object", command: "getList", token: token, data: [{ bucket: bucket, prefix: "" }] }), function (objects) {
+											$.each(o.view.ctx.root.data().nav(),function(idx,link){
+												if (link.link() == o.linkCtx.data.link()){
+													$(o.linkCtx.elem).addClass("active")
+												}else{
+													$("a[href$='"+link.link()+"']").removeClass("active");
+												}
+											});
 											EVGallery({target:"contentID",data:objects.data});
 										});
 										break;
 									case "#upload":
+											$.each(o.view.ctx.root.data().nav(),function(idx,link){
+												if (link.link() == o.linkCtx.data.link()){
+													$(o.linkCtx.elem).addClass("active")
+												}else{
+													$("a[href$='"+link.link()+"']").removeClass("active");
+												}
+											});
 										EVUpload({
 											target: "contentID",
 											data:{bucket:bucket},
@@ -65,9 +76,8 @@ $(document).ready(function () {
 															if(res.debug.error != ""){
 																alert(res.debug.error)
 															}
-															EVMsg.send(connID, EVMsg.newMessage({ scope: "Object", command: "getList", token: token, data: [{ bucket: bucket, prefix: "" }] }), function (objects) {
-																EVGallery({target:"contentID",data:objects.data});
-															});
+
+															$("a[href$='"+bucket+"']").click();
 														},
 														error: function (xhr, err,txt) {
 															console.log(xhr, err, txt);
@@ -88,11 +98,7 @@ $(document).ready(function () {
 					});
 					EVFooter({target:"footerID",content:"content"});
 					token = json.data[0].token;
-					EVMsg.send(connID, { scope: "Bucket", command: "getList", token: json.data[0].token }, function (resp) {
-						EVMsg.send(connID, EVMsg.newMessage({ scope: "Object", command: "getList", token: token, data: [{ bucket: bucket, prefix: "" }] }), function (objects) {
-							EVGallery({target:"contentID",data:objects.data});
-						});
-					});
+					$("a[href$='"+bucket+"']").click();
 				}
 			});
 		},

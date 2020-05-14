@@ -29,3 +29,13 @@ div.desc {
   padding: 16px;
 }
 
+nav .w3-button.active {
+  background-color: #81BEF7;
+  color: #fff;
+}
+
+nav .w3-button:hover {
+  background-color: #81BEF7; 
+  color: #fff;
+}
+
