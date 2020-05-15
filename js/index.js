@@ -3,10 +3,11 @@ $(document).ready(function () {
 	var token = null;
 	var logo = "/img/logo.png";
 	var bucket = "test";
+	var wsURL = "ws://192.168.178.91:7878/v0.0.1/ws";
 	EVLogin({
 		onSend: function (obj) {
 			connID = EVMsg.login({
-				url: "ws://192.168.178.91:7878/v0.0.1/ws",
+				url: wsURL,
 				id: obj.username(),
 				secret: obj.password(),
 				scope: "Login",
@@ -38,6 +39,7 @@ $(document).ready(function () {
 								switch(o.linkCtx.data.link()){
 									case "#"+bucket:
 										EVMsg.send(connID, EVMsg.newMessage({ scope: "Object", command: "getList", token: token, data: [{ bucket: bucket, prefix: "" }] }), function (objects) {
+											console.log(objects);
 											$.each(o.view.ctx.root.data().nav(),function(idx,link){
 												if (link.link() == o.linkCtx.data.link()){
 													$(o.linkCtx.elem).addClass("active")
@@ -63,6 +65,7 @@ $(document).ready(function () {
 												upload: function (event, obj) {
 													event.preventDefault();
 													var fData = new FormData()
+													fData.append("description",$(obj.linkCtx.elem[2]).val())
 													fData.append("file", obj.linkCtx.elem[1].files[0]);
 													$.ajax({
 														url: "/v0.0.1/files/buckets/"+bucket+"/objects",
@@ -76,7 +79,6 @@ $(document).ready(function () {
 															if(res.debug.error != ""){
 																alert(res.debug.error)
 															}
-
 															$("a[href$='"+bucket+"']").click();
 														},
 														error: function (xhr, err,txt) {
