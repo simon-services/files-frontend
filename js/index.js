@@ -3,6 +3,7 @@ $(document).ready(function () {
 	if (EVMsg.urlParam("admin")){
 		admin = true
 	}
+	console.log("admin",admin);
 	var connID = null;
 	var token = null;
 	var logo = "/img/logo.png";
@@ -42,6 +43,13 @@ $(document).ready(function () {
 						logo: logo,
 						nav: nav,
 						helpers:{
+							onDelete: function(e,o){
+								console.log("delete",e,o);
+								EVMsg.send(connID, EVMsg.newMessage({scope:"Object",command:"delete",token:token,data:[{bucket:o.linkCtx.data.bucket(),file:o.linkCtx.data.key()}]}),function(deleted){
+									console.log("deleted",deleted);
+									$("a[href$='"+bucket+"']").click();
+								});
+							},
 							onClick: function(e,o){
 								switch(o.linkCtx.data.link()){
 									case "#"+bucket:
@@ -54,7 +62,7 @@ $(document).ready(function () {
 													$("a[href$='"+link.link()+"']").removeClass("active");
 												}
 											});
-											EVGallery({target:"contentID",data:objects.data});
+											EVGallery({target:"contentID",data:objects.data,admin:admin});
 										});
 										break;
 									case "#upload":
