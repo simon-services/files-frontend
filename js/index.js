@@ -1,9 +1,29 @@
 $(document).ready(function () {
+	var admin = false;
+	if (EVMsg.urlParam("admin")){
+		admin = true
+	}
 	var connID = null;
 	var token = null;
 	var logo = "/img/logo.png";
 	var bucket = "test";
 	var wsURL = "ws://192.168.178.91:7878/v0.0.1/ws";
+	var nav = [
+		{
+			position:0,
+			label:bucket,
+			link:"#"+bucket,
+			dropdown: false
+		}
+	];
+	if (admin == true){
+		nav.push({
+			position:1,
+			label:"upload",
+			link:"#upload",
+			dropdown: false
+		});
+	}
 	EVLogin({
 		onSend: function (obj) {
 			connID = EVMsg.login({
@@ -20,20 +40,7 @@ $(document).ready(function () {
 						content: "contentID",
 						footer: "footerID",
 						logo: logo,
-						nav: [
-							{
-								position:0,
-								label:bucket,
-								link:"#"+bucket,
-								dropdown: false
-							},
-							{
-								position:1,
-								label:"upload",
-								link:"#upload",
-								dropdown: false
-							}
-						],
+						nav: nav,
 						helpers:{
 							onClick: function(e,o){
 								switch(o.linkCtx.data.link()){

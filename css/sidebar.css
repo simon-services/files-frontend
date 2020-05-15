@@ -23,6 +23,10 @@
 
 .w3-teal{background-color: #81BEF7 !important}
 
+.w3-gallery-button{
+	background-color: #81BEF7;
+}
+
 #contentID{
     margin-bottom:70px;
 } 
